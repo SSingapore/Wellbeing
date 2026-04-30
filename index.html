@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+        <div class="support-item">A trusted teacher</div>
+        <div class="support-item">School counsellor or wellbeing lead</div>
+        <div class="support-item">Head of Secondary / Year Leader</div>
+        <div class="support-item">A trusted relative</div>
+        <div class="support-item">A health professional</div>
+      </div>
+      <p><strong>Emergency message:</strong> If someone is in immediate danger, get help from a trusted adult or emergency service straight away.</p>
+    </section>
+
+    <p class="footer-note">School note: This tool is for reflection and prevention. It is not counselling or medical advice. Students who are worried about themselves or a friend should speak with a trusted adult.</p>
+  </main>
+
+  <script>
+    const stress = document.getElementById('stress');
+    const stressValue = document.getElementById('stressValue');
+
+    stress.addEventListener('input', () => {
+      stressValue.textContent = stress.value;
+    });
+
+    function showCheckIn() {
+      const value = Number(stress.value);
+      const result = document.getElementById('checkinResult');
+      let message = '';
+
+      if (value <= 2) {
+        message = '<strong>You seem steady right now.</strong><br>Protect this by staying organised, resting well, and checking in with friends kindly.';
+        result.className = 'result';
+      } else if (value === 3) {
+        message = '<strong>You may be feeling some pressure.</strong><br>Try one small step: breathe for 60 seconds, break your task into parts, or talk to someone you trust.';
+        result.className = 'result';
+      } else {
+        message = '<strong>Your pressure level is high.</strong><br>Pause before deciding. Move away from risky pressure, speak to a trusted adult, and use the breathing reset below.';
+        result.className = 'result warning-result';
+      }
+
+      result.innerHTML = message;
+      result.style.display = 'block';
+    }
+
+    function chooseScenario(button, isCorrect) {
+      document.querySelectorAll('#scenario .choice').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+
+      const result = document.getElementById('scenarioResult');
+      if (isCorrect) {
+        result.className = 'result';
+        result.innerHTML = '<strong>Strong choice.</strong><br>A safe response is clear, calm, and followed by action. Saying no is stronger when you also move away and connect with someone safe.';
+      } else {
+        result.className = 'result warning-result';
+        result.innerHTML = '<strong>Try again.</strong><br>Pressure can make unsafe choices feel easier. A safer response is to say no clearly, move away, and stay near someone you trust.';
+      }
+      result.style.display = 'block';
+    }
+
+    function setExitLine(line) {
+      document.getElementById('exitLineBox').textContent = line;
+    }
+
+    let breathingInterval;
+    function startBreathing() {
+      clearInterval(breathingInterval);
+      const circle = document.getElementById('breathingCircle');
+      const text = document.getElementById('breathingText');
+      let step = 0;
+      const instructions = [
+        { label: 'Breathe in slowly', expand: true },
+        { label: 'Hold gently', expand: true },
+        { label: 'Breathe out slowly', expand: false },
+        { label: 'Pause', expand: false }
+      ];
+      let secondsLeft = 60;
+
+      function update() {
+        const current = instructions[step % instructions.length];
+        circle.textContent = current.label;
+        text.textContent = `${current.label} — ${secondsLeft}s left`;
+        if (current.expand) {
+          circle.classList.add('expand');
+        } else {
+          circle.classList.remove('expand');
+        }
+        step++;
+        secondsLeft -= 4;
+        if (secondsLeft < 0) {
+          clearInterval(breathingInterval);
+          circle.classList.remove('expand');
+          circle.textContent = 'Done';
+          text.textContent = 'Reset complete. Notice how you feel now.';
+        }
+      }
+
+      update();
+      breathingInterval = setInterval(update, 4000);
+    }
+  </script>
+</body>
+</html>
